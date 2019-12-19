@@ -1,38 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Button } from 'reactstrap';
+import axios from "axios";
+
+// values props from Formik: state of inputs and updates with change in input
 
 // adding destructured 'errors' and 'touched' props to form
 // props get passed down from the 'withFormik' component
 
 // 'touched' prop tracks if you've been in a field
 // avoid validation error when typing in a field for the first time
-function SignUpForm({ errors, touched }) {
 
-  // we don't need stage management 
+function SignUpForm({ values, errors, touched }) {
+  // we don't need input state management 
   // or handleChange and handleSubmit inside this function
-  
+
+  // state that holds successful form submission data
+  const [users, setUsers] = useState([]);
+
   return (
     // we don't need onSubmit on form
     // we don't need onChange on input
 
     // all fields in Formik are called <Field>; input by default
     // Formik fields need the name attribute; Formik uses them as keys
+    // name is key within values (current state of form inputs)
 
     // && returns value of one of the operands
     // if left operand is truthy, return right; else, return left
     
     //if there is an error, error message shows
+
+    //wrap checkbox in <label> to make checkbox text also clickable
     <Form>
-      {touched.username && errors.username && <p>{errors.username}</p>}
       <label htmlFor="username">Name</label>
       <Field
         id="username"
         name="username"
         placeholder="first name"
       />
-      {touched.email && errors.email && <p>{errors.email}</p>}
+      {touched.username && errors.username && <div className="invalid">{errors.username}</div>}
       <label htmlFor="email">Email</label>
       <Field
         id="email"
@@ -40,7 +48,7 @@ function SignUpForm({ errors, touched }) {
         name="email"
         placeholder="lillian@example.com"
       />
-      {touched.password && errors.password && <p>{errors.password}</p>}
+      {touched.email && errors.email && <div className="invalid">{errors.email}</div>}
       <label htmlFor="password">Password</label>
       <Field
         id="password"
@@ -48,59 +56,79 @@ function SignUpForm({ errors, touched }) {
         name="password"
         placeholder="letters and numbers"
       />
+      {touched.password && errors.password && <div className="invalid">{errors.password}</div>}
       <div className="checkbox">
-        <Field
-          id="tos"
-          type="checkbox"
-          name="tos"
-        />
-        <label htmlFor="tos">I did not read the Terms of Service</label>
+        <label htmlFor="tos">
+          <Field
+            id="tos"
+            type="checkbox"
+            name="tos"
+            checked={values.tos}
+          />
+          I did not read the Terms of Service
+        </label>
       </div>
       <Button color="primary" size="lg" type="submit">Sign Up</Button>
-    </Form>
+    </Form> 
   );
 }
 
-// a higher-order component is a function that accepts a component
+/* // a higher-order component is a function that accepts a component
 // and returns an enhanced component
 
 // withFormik() creates a higher-order Formik component 
 // by passing in props and form handlers into SignUpForm
 
-// or use <Formik> if not using higher-order components
+// or use <Formik> if not using higher-order components */
 
 const FormikSignUpForm = withFormik({
   // mapPropsToValues connects the data in the form to data handlers
   // conditional values allow passing in default or custom data initially
+  // use mapPropsToValues to initialize empty state of form
 
-  mapPropsToValues({ username, email, password }) {
+  mapPropsToValues({ username, email, password, tos }) {
     return {
       // || returns value of one of the operands
       // if left operand is truthy, return left; else return right
 
       username: username || "",
       email: email || "",
-      password: password || ""
+      password: password || "",
+      tos: tos || false,
     };
   },
 
   // * * * * * VALIDATION SCHEMA: start
   validationSchema: Yup.object().shape({
-    name: Yup.string()
-      .trim()
-      .required(),
+    username: Yup.string()
+      .strict().trim("No leading or trailing spaces, please").required("Name is required"),
     email: Yup.string()
-      .email()
-      .required(),
+      .email("Email is not valid").required("Email is required"),
     password: Yup.string()
-      .min(6)
-      .required()
+      .min(6, "Password must be at least 6 characters").required("Password is required")
   }),
   // * * * * * VALIDATION SCHEMA: end
 
-  // FORM SUBMISSION CODE... HTTP REQUESTS, ETC.
-  handleSubmit(values) {
-    console.log(values);
+  // * * FORM SUBMISSION CODE... HTTP REQUESTS, ETC.
+
+  // from FormikBag: setStatus sends API response to Form and resetForm clears form
+
+  handleSubmit(values, { setStatus, resetForm }) {
+    console.log("submitting", values);
+    // using .post(), we pass in the data we want to send to our server as the second argument
+    axios.post('https://reqres.in/api/users', values)
+      .then(response => {
+        console.log("success", response);
+        
+        // from FormikBag: setStatus sends API response to SignUpForm
+        setStatus(response.data);
+
+        // from FormikBag: resetForm clears form
+        resetForm();
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 })(SignUpForm); 
 
