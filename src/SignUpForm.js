@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Button } from 'reactstrap';
@@ -12,12 +12,32 @@ import axios from "axios";
 // 'touched' prop tracks if you've been in a field
 // avoid validation error when typing in a field for the first time
 
-function SignUpForm({ values, errors, touched }) {
+function SignUpForm({ values, errors, touched, status }) {
   // we don't need input state management 
   // or handleChange and handleSubmit inside this function
 
   // state that holds successful form submission data
   const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    console.log("status has changed", status);
+
+    // if status has content (obj from API response),
+    // call setUsers
+    status && setUsers(users => [...users, status]);
+    // doing setUsers([...users, status] fires warning that users is a missing dependency
+    // but this is the only place users can change
+    // callback reads current value of users and uses it to create new array
+
+  }, [status])
+
+
+
+// if status has content (an obj from API response) then render function setAnimals
+    // use a spread to create a new array with all of animals' previous values + the new obj from the API stored in status
+    // could be setAnimals([...animals, status]) but that fires a warning that we should watch animals. We don't need to watch for animals changes (this is the only place it could change)
+    // change to animals => [...animals, status] to read in the current value of animals, and then use it to create a new array
+
 
   return (
     // we don't need onSubmit on form
@@ -54,7 +74,7 @@ function SignUpForm({ values, errors, touched }) {
         id="password"
         type="password"
         name="password"
-        placeholder="letters and numbers"
+        placeholder="6 or more characters"
       />
       {touched.password && errors.password && <div className="invalid">{errors.password}</div>}
       <div className="checkbox">
