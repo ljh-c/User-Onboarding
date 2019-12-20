@@ -139,8 +139,11 @@ const FormikSignUpForm = withFormik({
 
   // from FormikBag: setStatus sends API response to Form and resetForm clears form
 
-  handleSubmit(values, { setStatus, resetForm }) {
+  handleSubmit(values, { setStatus, resetForm, setErrors }) {
     console.log("submitting", values);
+    if (values.email === "waffle@syrup.com") {
+      setErrors({email: "That email is already taken"});
+    } else {
     // using .post(), we pass in the data we want to send to our server as the second argument
     axios.post('https://reqres.in/api/users', values)
       .then(response => {
@@ -155,6 +158,7 @@ const FormikSignUpForm = withFormik({
       .catch(error => {
         console.log(error);
       })
+    }
   }
 })(SignUpForm); 
 
