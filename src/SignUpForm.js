@@ -32,8 +32,6 @@ function SignUpForm({ values, errors, touched, status }) {
 
   }, [status])
 
-
-
 // if status has content (an obj from API response) then render function setAnimals
     // use a spread to create a new array with all of animals' previous values + the new obj from the API stored in status
     // could be setAnimals([...animals, status]) but that fires a warning that we should watch animals. We don't need to watch for animals changes (this is the only place it could change)

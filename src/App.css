@@ -41,3 +41,7 @@ button {
   padding: 10px;
   margin: 20px auto;
 }
+
+.pagination {
+  justify-content: center;
+}
