@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { withFormik, Form, Field } from "formik";
-import * as Yup from "yup";
+import { withFormik, Form, Field } from 'formik';
+import * as Yup from 'yup';
+import axios from 'axios';
 import { Button } from 'reactstrap';
-import axios from "axios";
+import UserList from './UserList';
 
 // values props from Formik: state of inputs and updates with change in input
 
@@ -53,6 +54,7 @@ function SignUpForm({ values, errors, touched, status }) {
     //if there is an error, error message shows
 
     //wrap checkbox in <label> to make checkbox text also clickable
+    <>
     <Form>
       <label htmlFor="username">Name</label>
       <Field
@@ -90,6 +92,8 @@ function SignUpForm({ values, errors, touched, status }) {
       </div>
       <Button color="primary" size="lg" type="submit">Sign Up</Button>
     </Form> 
+    <UserList users={users} />
+    </>
   );
 }
 
