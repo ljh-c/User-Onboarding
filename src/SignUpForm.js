@@ -34,7 +34,8 @@ function SignUpForm({ values, errors, touched, status }) {
 
 // if status has content (an obj from API response) then render function setAnimals
     // use a spread to create a new array with all of animals' previous values + the new obj from the API stored in status
-    // could be setAnimals([...animals, status]) but that fires a warning that we should watch animals. We don't need to watch for animals changes (this is the only place it could change)
+    // could be setAnimals([...animals, status]) but that fires a warning that we should watch animals. 
+    // we don't need to watch for animals changes (this is the only place it could change)
     // change to animals => [...animals, status] to read in the current value of animals, and then use it to create a new array
 
 
@@ -88,6 +89,7 @@ function SignUpForm({ values, errors, touched, status }) {
           I did not read the Terms of Service
         </label>
       </div>
+      {touched.tos && errors.tos && <div className="invalid">{errors.tos}</div>}
       <Button color="primary" size="lg" type="submit">Sign Up</Button>
     </Form> 
     <UserList users={users} />
@@ -127,7 +129,9 @@ const FormikSignUpForm = withFormik({
     email: Yup.string()
       .email("Email is not valid").required("Email is required"),
     password: Yup.string()
-      .min(6, "Password must be at least 6 characters").required("Password is required")
+      .min(6, "Password must be at least 6 characters").required("Password is required"),
+    tos: Yup.boolean()
+      .oneOf([true], "Must admit to not reading the Terms of Service")
   }),
   // * * * * * VALIDATION SCHEMA: end
 
