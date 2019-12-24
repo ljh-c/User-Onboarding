@@ -1,0 +1,47 @@
+.App {
+  text-align: center;
+  padding: 40px 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+label {
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+input {
+  padding: 8px;
+  border-radius: 0.25rem;
+  border: 1px solid #ced4da;
+}
+
+input[type="checkbox"] {
+  margin-right: 15px;
+}
+
+button {
+  margin: 16px 0 20px;
+}
+
+.invalid {
+  color: #dc3545;
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+.card {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.12), 0 5px 2px rgba(0, 0, 0, 0.24);
+  max-width: 360px;
+  padding: 10px;
+  margin: 20px auto;
+}
+
+.pagination {
+  justify-content: center;
+}
